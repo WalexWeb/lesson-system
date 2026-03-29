@@ -40,6 +40,15 @@ export class SessionController {
     return this.sessionService.getCurrentSession();
   }
 
+  @Post('teacher/assignment-text')
+  setAssignmentText(
+    @Body('text') text: string | undefined,
+  ): SessionInfo {
+    const raw = typeof text === 'string' ? text : '';
+    const safe = raw.length > 100_000 ? raw.slice(0, 100_000) : raw;
+    return this.sessionService.setAssignmentText(safe);
+  }
+
   @Post('teacher/assignment')
   @UseInterceptors(
     FileInterceptor('file', {

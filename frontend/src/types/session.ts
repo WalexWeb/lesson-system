@@ -1,4 +1,4 @@
-export interface SessionInfo {
+export interface Session {
   id: string;
   title: string;
   createdAt: string;
@@ -7,4 +7,3 @@ export interface SessionInfo {
   assignmentFileName: string | null;
   assignmentText: string | null;
 }
-

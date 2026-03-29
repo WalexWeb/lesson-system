@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { api } from "../lib/api";
 import { io, Socket } from "socket.io-client";
+import type { Session } from "../types/session";
 import {
   AcademicCapIcon,
   PlusCircleIcon,
@@ -10,18 +12,8 @@ import {
   DocumentTextIcon,
   LinkIcon,
   ArrowDownTrayIcon,
-  CheckCircleIcon,
   XCircleIcon,
 } from "@heroicons/react/24/outline";
-
-interface Session {
-  id: string;
-  title: string;
-  createdAt: string;
-  expiresAt: string | null;
-  joinCode: string;
-  assignmentFileName: string | null;
-}
 
 interface Submission {
   id: string;
@@ -41,6 +33,7 @@ export const TeacherPage: React.FC = () => {
   const [session, setSession] = useState<Session | null>(null);
   const [title, setTitle] = useState("Lesson");
   const [assignmentName, setAssignmentName] = useState<string | null>(null);
+  const [assignmentDraft, setAssignmentDraft] = useState("");
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -52,6 +45,9 @@ export const TeacherPage: React.FC = () => {
         setSession(res.data || null);
         if (res.data?.assignmentFileName) {
           setAssignmentName(res.data.assignmentFileName);
+        }
+        if (res.data?.assignmentText != null) {
+          setAssignmentDraft(res.data.assignmentText);
         }
       })
       .catch(() => undefined);
@@ -88,6 +84,7 @@ export const TeacherPage: React.FC = () => {
     try {
       const res = await api.post<Session>("/teacher/session", { title });
       setSession(res.data);
+      setAssignmentDraft(res.data.assignmentText ?? "");
     } catch (err: any) {
       setError(err?.message || "Ошибка создания сессии");
     } finally {
@@ -115,6 +112,23 @@ export const TeacherPage: React.FC = () => {
       setAssignmentName(res.data.fileName);
     } catch (err: any) {
       setError(err?.message || "Ошибка загрузки файла");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSaveAssignmentText = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    try {
+      const res = await api.post<Session>("/teacher/assignment-text", {
+        text: assignmentDraft,
+      });
+      setSession(res.data);
+      setAssignmentDraft(res.data.assignmentText ?? "");
+    } catch (err: any) {
+      setError(err?.message || "Ошибка сохранения текста");
     } finally {
       setLoading(false);
     }
@@ -203,6 +217,37 @@ export const TeacherPage: React.FC = () => {
                 {session.joinCode}
               </code>
             </div>
+
+            <form onSubmit={handleSaveAssignmentText} className="space-y-3">
+              <label className="block text-sm font-medium text-slate-700">
+                Текст задания для экрана ОРД
+              </label>
+              <textarea
+                value={assignmentDraft}
+                onChange={(e) => setAssignmentDraft(e.target.value)}
+                disabled={loading}
+                rows={6}
+                placeholder="Введите формулировку задания — она отобразится на странице в стиле оперативно-розыскной деятельности (/ord)…"
+                className="w-full resize-y rounded-xl border border-slate-200 bg-white/80 px-4 py-3 text-slate-800 placeholder-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/20"
+              />
+              <div className="flex flex-wrap items-center gap-3">
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="inline-flex items-center gap-2 rounded-xl bg-slate-800 px-4 py-2.5 text-sm font-medium text-white shadow transition hover:bg-slate-900 disabled:opacity-50"
+                >
+                  Сохранить текст
+                </button>
+                <Link
+                  to="/ord"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm font-medium text-emerald-700 underline-offset-4 hover:text-emerald-800 hover:underline"
+                >
+                  Открыть экран задания (ОРД)
+                </Link>
+              </div>
+            </form>
 
             {/* Загрузка файла задания */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">

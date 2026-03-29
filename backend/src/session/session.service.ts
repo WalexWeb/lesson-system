@@ -31,6 +31,7 @@ export class SessionService {
       expiresAt: null,
       joinCode: entity.joinCode,
       assignmentFileName: null,
+      assignmentText: null,
     };
 
     void saved.then((s) => {
@@ -41,6 +42,7 @@ export class SessionService {
         expiresAt: s.expiresAt ? s.expiresAt.toISOString() : null,
         joinCode: s.joinCode,
         assignmentFileName: s.assignmentFileName,
+        assignmentText: s.assignmentText ?? null,
       };
     });
 
@@ -60,5 +62,18 @@ export class SessionService {
       { id: this.currentSession.id },
       { assignmentFileName: fileName },
     );
+  }
+
+  setAssignmentText(text: string | null): SessionInfo {
+    if (!this.currentSession) {
+      throw new Error('Session not created');
+    }
+    const trimmed = text && text.trim().length > 0 ? text.trim() : null;
+    this.currentSession.assignmentText = trimmed;
+    void this.repo.update(
+      { id: this.currentSession.id },
+      { assignmentText: trimmed },
+    );
+    return this.currentSession;
   }
 }

@@ -21,6 +21,9 @@ export class SessionEntity {
   @Column({ type: 'varchar', length: 255, nullable: true })
   assignmentFileName!: string | null;
 
+  @Column({ type: 'text', nullable: true })
+  assignmentText!: string | null;
+
   @OneToMany(() => SubmissionEntity, (s) => s.session)
   submissions!: SubmissionEntity[];
 }

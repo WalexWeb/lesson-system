@@ -4,6 +4,7 @@ import './styles.css';
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import { TeacherPage } from './pages/TeacherPage';
 import { StudentPage } from './pages/StudentPage';
+import { OrdAssignmentPage } from './pages/OrdAssignmentPage';
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
       <Routes>
         <Route path="/teacher" element={<TeacherPage />} />
         <Route path="/student" element={<StudentPage />} />
+        <Route path="/ord" element={<OrdAssignmentPage />} />
         <Route path="*" element={<Navigate to="/teacher" replace />} />
       </Routes>
     </BrowserRouter>

@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { api } from "../lib/api";
+import type { Session } from "../types/session";
 // Для иконок используем Heroicons (установите @heroicons/react)
 import {
   DocumentArrowDownIcon,
@@ -8,11 +10,6 @@ import {
   XCircleIcon,
   AcademicCapIcon,
 } from "@heroicons/react/24/outline";
-
-interface Session {
-  id: string;
-  title: string;
-}
 
 export const StudentPage: React.FC = () => {
   const [session, setSession] = useState<Session | null>(null);
@@ -123,14 +120,16 @@ export const StudentPage: React.FC = () => {
         )}
 
         {/* Кнопка скачивания задания */}
-        <button
-          type="button"
-          onClick={handleDownloadAssignment}
-          className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 px-6 rounded-xl shadow-lg shadow-emerald-600/30 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] mb-8"
-        >
-          <DocumentArrowDownIcon className="w-5 h-5 transition-transform group-hover:-translate-y-0.5" />
-          <span>Скачать файл задания</span>
-        </button>
+        <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+          <button
+            type="button"
+            onClick={handleDownloadAssignment}
+            className="group inline-flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-6 py-3 font-medium text-white shadow-lg shadow-emerald-600/30 transition-all duration-200 hover:scale-[1.02] hover:bg-emerald-700 active:scale-[0.98] sm:w-auto"
+          >
+            <DocumentArrowDownIcon className="h-5 w-5 transition-transform group-hover:-translate-y-0.5" />
+            <span>Скачать файл задания</span>
+          </button>
+        </div>
 
         {/* Форма отправки */}
         <form onSubmit={handleSubmit} className="space-y-6">
