@@ -227,7 +227,7 @@ export const TeacherPage: React.FC = () => {
                 onChange={(e) => setAssignmentDraft(e.target.value)}
                 disabled={loading}
                 rows={6}
-                placeholder="Введите формулировку задания — она отобразится на странице в стиле оперативно-розыскной деятельности (/ord)…"
+                placeholder="Введите формулировку задания — она отобразится на странице /ord в стилистике противодействия НОН в сети (ИТК)…"
                 className="w-full resize-y rounded-xl border border-slate-200 bg-white/80 px-4 py-3 text-slate-800 placeholder-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/20"
               />
               <div className="flex flex-wrap items-center gap-3">
